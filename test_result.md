@@ -263,7 +263,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "LocalStorage Data Export/Import API"
     - "LocalStorage Data Management UI" 
     - "Enhanced Category management UI with Groups & Drag & Drop"
     - "Visual Effects & Animations"
