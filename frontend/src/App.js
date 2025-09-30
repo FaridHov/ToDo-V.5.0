@@ -507,34 +507,31 @@ function App() {
                           onDragStart={(e) => handleCategoryDragStart(e, prog, index)}
                           onDragOver={(e) => handleCategoryDragOver(e, index)}
                           onDrop={(e) => handleCategoryDrop(e, index)}
-                          className={`bg-white rounded-lg p-4 shadow-sm border-2 transition-all duration-300 cursor-move hover:shadow-md ${
-                            dragOverIndex === index ? 'border-indigo-400 bg-indigo-50' : 'border-gray-200'
+                          className={`category-card rounded-lg p-4 transition-all duration-300 cursor-move ${
+                            dragOverIndex === index ? 'border-blue-400' : ''
                           }`}
                         >
                           <div className="flex justify-between items-center mb-2">
-                            <h4 className="font-semibold text-gray-800">{prog.category_name}</h4>
-                            <span className="text-sm font-bold text-indigo-600">
+                            <h4 className="font-semibold dark-blue-text">{prog.category_name}</h4>
+                            <span className="text-sm font-bold text-blue-300">
                               {Math.round(prog.progress_percentage)}%
                             </span>
                           </div>
                           
-                          <div className="w-full bg-gray-200 rounded-full h-4 mb-2 overflow-hidden">
+                          <div className="w-full bg-gray-700 rounded-full h-4 mb-2 overflow-hidden">
                             <div 
                               className="progress-bar-animated h-4 rounded-full transition-all duration-1000 ease-out"
                               style={{ 
-                                width: `${prog.progress_percentage}%`,
-                                background: prog.progress_percentage === 100 
-                                  ? 'linear-gradient(90deg, #10b981, #059669)' 
-                                  : 'linear-gradient(90deg, #6366f1, #8b5cf6)'
+                                width: `${prog.progress_percentage}%`
                               }}
                             ></div>
                           </div>
                           
-                          <div className="text-xs text-gray-600 mb-2">
+                          <div className="text-xs dark-blue-text-secondary mb-2">
                             {prog.completed_weight} из {prog.total_weight} очков
                           </div>
                           
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs dark-blue-text-secondary">
                             {prog.completed_task_count}/{prog.task_count} задач
                           </div>
                           
