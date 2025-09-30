@@ -465,6 +465,154 @@ class ProgressTrackerTesterV2:
         except Exception as e:
             self.log_result("Cascade Deletion", False, f"Exception: {str(e)}")
     
+    def test_localstorage_export_import(self):
+        """Test localStorage export/import functionality"""
+        print("\n=== Testing LocalStorage Export/Import ===")
+        
+        # Test 1: Export data when database has content
+        try:
+            response = requests.get(f"{self.base_url}/export")
+            if response.status_code == 200:
+                export_data = response.json()
+                required_fields = ["categories", "tasks", "exported_at"]
+                if all(field in export_data for field in required_fields):
+                    self.log_result("Export Data Structure", True, f"Export contains {len(export_data['categories'])} categories, {len(export_data['tasks'])} tasks")
+                    
+                    # Store export data for import test
+                    self.export_backup = export_data
+                else:
+                    self.log_result("Export Data Structure", False, f"Missing required fields. Got: {list(export_data.keys())}")
+            else:
+                self.log_result("Export Data Structure", False, f"Export failed with status: {response.status_code}")
+        except Exception as e:
+            self.log_result("Export Data Structure", False, f"Exception: {str(e)}")
+        
+        # Test 2: Clear all data
+        try:
+            response = requests.delete(f"{self.base_url}/clear-all")
+            if response.status_code == 200:
+                # Verify data is cleared
+                categories_response = requests.get(f"{self.base_url}/categories")
+                tasks_response = requests.get(f"{self.base_url}/tasks")
+                
+                if (categories_response.status_code == 200 and tasks_response.status_code == 200):
+                    categories = categories_response.json()
+                    tasks = tasks_response.json()
+                    
+                    if len(categories) == 0 and len(tasks) == 0:
+                        self.log_result("Clear All Data", True, "All categories and tasks cleared successfully")
+                    else:
+                        self.log_result("Clear All Data", False, f"Data not fully cleared: {len(categories)} categories, {len(tasks)} tasks remain")
+                else:
+                    self.log_result("Clear All Data", False, "Failed to verify data clearing")
+            else:
+                self.log_result("Clear All Data", False, f"Clear failed with status: {response.status_code}")
+        except Exception as e:
+            self.log_result("Clear All Data", False, f"Exception: {str(e)}")
+        
+        # Test 3: Export empty database
+        try:
+            response = requests.get(f"{self.base_url}/export")
+            if response.status_code == 200:
+                empty_export = response.json()
+                if (len(empty_export["categories"]) == 0 and len(empty_export["tasks"]) == 0 
+                    and "exported_at" in empty_export):
+                    self.log_result("Export Empty Database", True, "Empty database export works correctly")
+                else:
+                    self.log_result("Export Empty Database", False, f"Empty export contains data: {len(empty_export['categories'])} categories, {len(empty_export['tasks'])} tasks")
+            else:
+                self.log_result("Export Empty Database", False, f"Empty export failed with status: {response.status_code}")
+        except Exception as e:
+            self.log_result("Export Empty Database", False, f"Exception: {str(e)}")
+        
+        # Test 4: Import data back
+        if hasattr(self, 'export_backup'):
+            try:
+                response = requests.post(f"{self.base_url}/import", 
+                                       json=self.export_backup, headers=self.headers)
+                if response.status_code == 200:
+                    # Verify data is restored
+                    categories_response = requests.get(f"{self.base_url}/categories")
+                    tasks_response = requests.get(f"{self.base_url}/tasks")
+                    
+                    if (categories_response.status_code == 200 and tasks_response.status_code == 200):
+                        categories = categories_response.json()
+                        tasks = tasks_response.json()
+                        
+                        expected_categories = len(self.export_backup["categories"])
+                        expected_tasks = len(self.export_backup["tasks"])
+                        
+                        if len(categories) == expected_categories and len(tasks) == expected_tasks:
+                            self.log_result("Import Data Restore", True, f"Data restored: {len(categories)} categories, {len(tasks)} tasks")
+                        else:
+                            self.log_result("Import Data Restore", False, f"Data mismatch: expected {expected_categories}/{expected_tasks}, got {len(categories)}/{len(tasks)}")
+                    else:
+                        self.log_result("Import Data Restore", False, "Failed to verify data restoration")
+                else:
+                    self.log_result("Import Data Restore", False, f"Import failed with status: {response.status_code}, Response: {response.text}")
+            except Exception as e:
+                self.log_result("Import Data Restore", False, f"Exception: {str(e)}")
+        
+        # Test 5: Import invalid data
+        invalid_data = {"invalid": "structure"}
+        try:
+            response = requests.post(f"{self.base_url}/import", 
+                                   json=invalid_data, headers=self.headers)
+            if response.status_code in [400, 422, 500]:  # Should reject invalid data
+                self.log_result("Import Invalid Data", True, f"Correctly rejected invalid data with status {response.status_code}")
+            else:
+                self.log_result("Import Invalid Data", False, f"Should have rejected invalid data, got status: {response.status_code}")
+        except Exception as e:
+            self.log_result("Import Invalid Data", False, f"Exception: {str(e)}")
+        
+        # Test 6: Complete cycle test - export → clear → import → verify
+        try:
+            # First ensure we have some data
+            if not hasattr(self, 'export_backup') or len(self.export_backup["categories"]) == 0:
+                # Create test data for cycle test
+                test_category = {"name": f"Cycle Test Category {uuid.uuid4().hex[:8]}"}
+                cat_response = requests.post(f"{self.base_url}/categories", json=test_category, headers=self.headers)
+                if cat_response.status_code == 200:
+                    category = cat_response.json()
+                    test_task = {
+                        "title": "Cycle Test Task",
+                        "weight": 15,
+                        "category_id": category["id"]
+                    }
+                    requests.post(f"{self.base_url}/tasks", json=test_task, headers=self.headers)
+            
+            # Export current state
+            export_response = requests.get(f"{self.base_url}/export")
+            if export_response.status_code == 200:
+                cycle_backup = export_response.json()
+                
+                # Clear all data
+                clear_response = requests.delete(f"{self.base_url}/clear-all")
+                if clear_response.status_code == 200:
+                    
+                    # Import data back
+                    import_response = requests.post(f"{self.base_url}/import", 
+                                                  json=cycle_backup, headers=self.headers)
+                    if import_response.status_code == 200:
+                        
+                        # Verify data integrity
+                        final_categories = requests.get(f"{self.base_url}/categories").json()
+                        final_tasks = requests.get(f"{self.base_url}/tasks").json()
+                        
+                        if (len(final_categories) == len(cycle_backup["categories"]) and 
+                            len(final_tasks) == len(cycle_backup["tasks"])):
+                            self.log_result("Complete Export-Import Cycle", True, "Full cycle completed successfully")
+                        else:
+                            self.log_result("Complete Export-Import Cycle", False, "Data integrity lost during cycle")
+                    else:
+                        self.log_result("Complete Export-Import Cycle", False, "Import step failed")
+                else:
+                    self.log_result("Complete Export-Import Cycle", False, "Clear step failed")
+            else:
+                self.log_result("Complete Export-Import Cycle", False, "Export step failed")
+        except Exception as e:
+            self.log_result("Complete Export-Import Cycle", False, f"Exception: {str(e)}")
+
     def cleanup(self):
         """Clean up test data"""
         print("\n=== Cleaning Up Test Data ===")
