@@ -161,6 +161,18 @@ backend:
           agent: "main"
           comment: "MongoDB updated to support new fields: category.group, category.order, task.priority, task.pinned, task.order. Fixed backward compatibility for existing data"
 
+  - task: "LocalStorage Data Export/Import API"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Added API endpoints /api/export, /api/import, /api/clear-all for localStorage functionality. Users can now save progress to browser and load it back."
+
 frontend:
   - task: "Enhanced Category management UI with Groups & Drag & Drop"
     implemented: true
