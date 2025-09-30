@@ -651,13 +651,13 @@ function App() {
 
         {/* Tasks Section */}
         {selectedCategoryId && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="glass-window p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800">📝 Задачи</h2>
+              <h2 className="text-2xl font-semibold dark-blue-text">📝 Задачи</h2>
               <select
                 value={selectedCategoryId}
                 onChange={(e) => setSelectedCategoryId(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="glass-input px-3 py-2 rounded-md focus:outline-none"
               >
                 <option value="">Выберите категорию</option>
                 {categories.map(cat => (
