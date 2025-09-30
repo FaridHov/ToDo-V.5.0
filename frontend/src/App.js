@@ -482,7 +482,7 @@ function App() {
         <div className="glass-window p-6 mb-8">
           
           {progress.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">Пока нет категорий. Создайте первую категорию ниже.</p>
+            <p className="dark-blue-text-secondary text-center py-8">Пока нет категорий. Создайте первую категорию ниже.</p>
           ) : (
             <div className="space-y-6">
               {/* Group by categories */}
@@ -491,10 +491,10 @@ function App() {
                 const avgProgress = groupProgress.reduce((sum, p) => sum + p.progress_percentage, 0) / groupProgress.length;
                 
                 return (
-                  <div key={group} className="border rounded-lg p-4 bg-gray-50">
+                  <div key={group} className="glass-card rounded-lg p-4">
                     <div className="flex justify-between items-center mb-3">
-                      <h3 className="text-lg font-semibold text-gray-700 capitalize">📁 {group}</h3>
-                      <span className="text-sm font-bold text-indigo-600">
+                      <h3 className="text-lg font-semibold dark-blue-text capitalize">📁 {group}</h3>
+                      <span className="text-sm font-bold text-blue-300">
                         Средний: {Math.round(avgProgress)}%
                       </span>
                     </div>
