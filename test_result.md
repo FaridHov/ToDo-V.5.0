@@ -259,7 +259,11 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "LocalStorage Data Export/Import API"
+    - "LocalStorage Data Management UI" 
+    - "Enhanced Category management UI with Groups & Drag & Drop"
+    - "Visual Effects & Animations"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
