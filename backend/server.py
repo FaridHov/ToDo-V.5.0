@@ -387,6 +387,12 @@ async def export_data():
     categories = await db.categories.find().sort("order", 1).to_list(length=None)
     tasks = await db.tasks.find().sort("order", 1).to_list(length=None)
     
+    # Remove MongoDB _id fields to avoid serialization issues
+    for category in categories:
+        category.pop('_id', None)
+    for task in tasks:
+        task.pop('_id', None)
+    
     return ExportData(
         categories=categories,
         tasks=tasks,
