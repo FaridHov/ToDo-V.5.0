@@ -375,6 +375,54 @@ async def get_all_progress():
     
     return progress_data
 
+# Data Export/Import endpoints for localStorage support
+class ExportData(BaseModel):
+    categories: List[dict]
+    tasks: List[dict]
+    exported_at: datetime
+
+@app.get("/api/export", response_model=ExportData)
+async def export_data():
+    """Export all data for localStorage backup"""
+    categories = await db.categories.find().sort("order", 1).to_list(length=None)
+    tasks = await db.tasks.find().sort("order", 1).to_list(length=None)
+    
+    return ExportData(
+        categories=categories,
+        tasks=tasks,
+        exported_at=datetime.utcnow()
+    )
+
+@app.post("/api/import")
+async def import_data(data: ExportData):
+    """Import data from localStorage backup"""
+    try:
+        # Clear existing data
+        await db.categories.delete_many({})
+        await db.tasks.delete_many({})
+        
+        # Import categories
+        if data.categories:
+            await db.categories.insert_many(data.categories)
+        
+        # Import tasks
+        if data.tasks:
+            await db.tasks.insert_many(data.tasks)
+            
+        return {"message": "Data imported successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Import failed: {str(e)}")
+
+@app.delete("/api/clear-all")
+async def clear_all_data():
+    """Clear all data (for fresh start)"""
+    try:
+        await db.categories.delete_many({})
+        await db.tasks.delete_many({})
+        return {"message": "All data cleared successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Clear failed: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
