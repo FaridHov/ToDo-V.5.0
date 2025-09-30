@@ -643,6 +643,7 @@ class ProgressTrackerTesterV2:
         self.test_category_crud()
         self.test_task_crud()
         self.test_progress_calculation()
+        self.test_localstorage_export_import()
         self.test_edge_cases()
         self.test_cascade_deletion()
         
