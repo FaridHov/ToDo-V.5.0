@@ -576,22 +576,20 @@ function App() {
               value={newCategoryName}
               onChange={(e) => setNewCategoryName(e.target.value)}
               placeholder="Название новой категории"
-              className="md:col-span-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              className="glass-input md:col-span-2 px-3 py-2 rounded-md focus:outline-none transition-colors"
             />
             <select
               value={newCategoryGroup}
               onChange={(e) => setNewCategoryGroup(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="glass-input px-3 py-2 rounded-md focus:outline-none"
             >
-              <option value="default">По умолчанию</option>
               <option value="work">Работа</option>
-              <option value="personal">Личное</option>
+              <option value="personal">Личная</option>
               <option value="health">Здоровье</option>
-              <option value="learning">Обучение</option>
             </select>
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none transition-colors"
             >
               ➕ Создать
             </button>
