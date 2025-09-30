@@ -775,12 +775,12 @@ function App() {
                     ) : (
                       <>
                         <div className={`flex-1 ${
-                          task.completed ? 'line-through text-gray-500' : 'text-gray-800'
+                          task.completed ? 'line-through text-gray-400' : 'dark-blue-text'
                         }`}>
                           <div className="flex items-center gap-2">
-                            {task.pinned && <span className="text-red-500">📌</span>}
+                            {task.pinned && <span className="text-red-400">📌</span>}
                             <span className="font-medium">{task.title}</span>
-                            <span className="text-sm font-bold px-2 py-1 rounded-full bg-indigo-100 text-indigo-700">
+                            <span className="text-sm font-bold px-2 py-1 rounded-full bg-blue-600 text-white">
                               {task.weight} pts
                             </span>
                             <span className="text-xs">
