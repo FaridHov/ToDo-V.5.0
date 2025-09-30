@@ -76,9 +76,9 @@ body {
   }
 }
 
-/* Progress bar enhancements */
+/* Progress bar enhancements - Dark Blue Theme */
 .progress-bar-animated {
-  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+  background: linear-gradient(90deg, #0ea5e9, #0284c7, #0369a1, #075985);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
   border-radius: 8px;
