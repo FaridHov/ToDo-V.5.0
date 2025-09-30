@@ -566,8 +566,8 @@ function App() {
         </div>
 
         {/* Category Management */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">🏷️ Управление категориями</h2>
+        <div className="glass-window p-6 mb-8">
+          <h2 className="text-2xl font-semibold mb-4 dark-blue-text">🏷️ Управление категориями</h2>
           
           {/* Create Category Form */}
           <form onSubmit={handleCreateCategory} className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
