@@ -603,7 +603,7 @@ function App() {
                 <input
                   type="text"
                   defaultValue={editingCategory.name}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
+                  className="glass-input w-full px-3 py-2 rounded-md focus:outline-none mb-3"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       const name = e.target.value;
@@ -616,13 +616,11 @@ function App() {
                 />
                 <select
                   defaultValue={editingCategory.group}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                  className="glass-input w-full px-3 py-2 rounded-md focus:outline-none mb-4"
                 >
-                  <option value="default">По умолчанию</option>
                   <option value="work">Работа</option>
-                  <option value="personal">Личное</option>
+                  <option value="personal">Личная</option>
                   <option value="health">Здоровье</option>
-                  <option value="learning">Обучение</option>
                 </select>
                 <div className="flex gap-2">
                   <button
