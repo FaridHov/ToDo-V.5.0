@@ -538,19 +538,19 @@ function App() {
                           <div className="flex gap-1 mt-2">
                             <button
                               onClick={() => setSelectedCategoryId(prog.category_id)}
-                              className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded hover:bg-indigo-200 transition-colors"
+                              className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition-colors"
                             >
                               Выбрать
                             </button>
                             <button
                               onClick={() => setEditingCategory({ id: prog.category_id, name: prog.category_name, group: prog.category_group })}
-                              className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded hover:bg-yellow-200 transition-colors"
+                              className="text-xs bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 transition-colors"
                             >
                               ✏️
                             </button>
                             <button
                               onClick={() => handleDeleteCategory(prog.category_id)}
-                              className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200 transition-colors"
+                              className="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 transition-colors"
                             >
                               🗑️
                             </button>
