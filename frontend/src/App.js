@@ -796,21 +796,21 @@ function App() {
                             onClick={() => handleTogglePin(task.id, !task.pinned)}
                             className={`px-2 py-1 text-xs rounded transition-colors ${
                               task.pinned 
-                                ? 'bg-red-100 text-red-700 hover:bg-red-200' 
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                ? 'bg-red-600 text-white hover:bg-red-700' 
+                                : 'bg-gray-600 text-white hover:bg-gray-700'
                             }`}
                           >
                             {task.pinned ? '📌' : '📌'}
                           </button>
                           <button
                             onClick={() => setEditingTask(task)}
-                            className="px-2 py-1 text-xs bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors"
+                            className="px-2 py-1 text-xs bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
                           >
                             ✏️
                           </button>
                           <button
                             onClick={() => handleDeleteTask(task.id)}
-                            className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
+                            className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                           >
                             🗑️
                           </button>
