@@ -705,7 +705,7 @@ function App() {
             {/* Tasks List */}
             <div className="space-y-2">
               {filteredTasks.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">Нет задач в этой категории</p>
+                <p className="dark-blue-text-secondary text-center py-8">Нет задач в этой категории</p>
               ) : (
                 filteredTasks.map((task, index) => (
                   <div 
