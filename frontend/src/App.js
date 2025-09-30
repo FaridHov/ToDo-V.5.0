@@ -430,19 +430,39 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Загрузка...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="glass-window p-8">
+          <div className="text-xl dark-blue-text">Загрузка...</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">🚀 Трекер Прогресса</h1>
-          <p className="text-gray-600">Отслеживайте свой прогресс по категориям с интерактивными эффектами</p>
+        {/* Data Management Controls */}
+        <div className="glass-window p-4 mb-6">
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={saveToLocalStorage}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              💾 Сохранить данные
+            </button>
+            <button
+              onClick={loadFromLocalStorage}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              📁 Загрузить данные
+            </button>
+            <button
+              onClick={clearAllData}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              🗑️ Очистить все
+            </button>
+          </div>
         </div>
 
         {/* Error Alert */}
