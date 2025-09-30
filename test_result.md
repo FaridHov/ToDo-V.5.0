@@ -173,6 +173,9 @@ frontend:
         - working: true
           agent: "main"
           comment: "Implemented category grouping UI, drag & drop reordering, group selection dropdown, visual group sections with average progress display"
+        - working: true
+          agent: "main"
+          comment: "MAJOR UI UPDATE: Changed to dark blue gradient theme with transparent glass windows. Updated categories to only show Работа/Личная/Здоровье. Added localStorage save/load functionality. Removed header titles as requested."
 
   - task: "Enhanced Progress bars with Groups & Visual Effects"
     implemented: true
