@@ -97,19 +97,23 @@ body {
   animation: shimmer 1.5s infinite;
 }
 
-/* Task priority cascading effects */
+/* Task priority cascading effects - Dark Blue Theme */
 .task-high-priority {
   margin-left: 0px;
   border-left: 4px solid #ef4444;
-  background: linear-gradient(135deg, #fef2f2, #ffffff);
+  background: linear-gradient(135deg, rgba(254, 242, 242, 0.1), rgba(255, 255, 255, 0.05));
   animation: slideInFromLeft 0.3s ease-out;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .task-medium-priority {
   margin-left: 20px;
   border-left: 4px solid #f59e0b;
-  background: linear-gradient(135deg, #fffbeb, #ffffff);
+  background: linear-gradient(135deg, rgba(255, 251, 235, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   animation: fadeInScale 0.3s ease-out;
   box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
 }
