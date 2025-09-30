@@ -1,0 +1,438 @@
+/* Enhanced styles for the Progress Tracker app with cascading effects */
+
+/* Base animations and effects */
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: 200px 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Progress bar enhancements */
+.progress-bar-animated {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+/* Task priority cascading effects */
+.task-high-priority {
+  margin-left: 0px;
+  border-left: 4px solid #ef4444;
+  background: linear-gradient(135deg, #fef2f2, #ffffff);
+  animation: slideInFromLeft 0.3s ease-out;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+}
+
+.task-medium-priority {
+  margin-left: 20px;
+  border-left: 4px solid #f59e0b;
+  background: linear-gradient(135deg, #fffbeb, #ffffff);
+  animation: fadeInScale 0.3s ease-out;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+}
+
+.task-low-priority {
+  margin-left: 40px;
+  border-left: 4px solid #3b82f6;
+  background: linear-gradient(135deg, #eff6ff, #ffffff);
+  animation: slideInFromRight 0.3s ease-out;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.task-pinned {
+  margin-left: 0px;
+  border: 2px solid #dc2626;
+  border-left: 6px solid #dc2626;
+  background: linear-gradient(135deg, #fef2f2, #ffffff);
+  animation: pulse 2s infinite;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+  position: relative;
+}
+
+.task-pinned::before {
+  content: '⭐';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #dc2626;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  animation: bounce 1s infinite;
+}
+
+/* Enhanced hover effects */
+.task-item:hover {
+  transform: translateY(-2px) translateX(5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.task-high-priority:hover {
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
+  border-left-width: 6px;
+}
+
+.task-medium-priority:hover {
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+  border-left-width: 6px;
+}
+
+.task-low-priority:hover {
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+  border-left-width: 6px;
+}
+
+/* Category card enhancements */
+.category-card {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  position: relative;
+  overflow: hidden;
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.category-card:hover::before {
+  left: 100%;
+}
+
+.category-card:hover {
+  border-color: #6366f1;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+}
+
+.category-card.selected {
+  border-color: #4f46e5;
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+  background: linear-gradient(135deg, #eef2ff, #ffffff);
+}
+
+/* Drag and drop effects */
+.dragging {
+  opacity: 0.7;
+  transform: rotate(5deg) scale(1.05);
+  z-index: 1000;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.drag-over {
+  border: 2px dashed #6366f1;
+  background: rgba(99, 102, 241, 0.05);
+  transform: scale(1.02);
+}
+
+/* Button enhancements */
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+.btn-primary:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #5b21b6, #7c3aed);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+/* Completed task effects */
+.completed-task {
+  opacity: 0.7;
+  background: linear-gradient(135deg, #f0fdf4, #ffffff);
+  border-left: 4px solid #22c55e;
+}
+
+.completed-task .task-title {
+  text-decoration: line-through;
+  color: #6b7280;
+  position: relative;
+}
+
+.completed-task .task-title::after {
+  content: '✅';
+  position: absolute;
+  right: -25px;
+  animation: bounce 0.5s ease-out;
+}
+
+/* Modal enhancements */
+.modal-overlay {
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.5);
+  animation: fadeInScale 0.3s ease-out;
+}
+
+.modal-content {
+  animation: fadeInScale 0.3s ease-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Loading animations */
+.loading-spinner {
+  border: 3px solid #f3f4f6;
+  border-top: 3px solid #6366f1;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Group section enhancements */
+.group-section {
+  background: linear-gradient(135deg, #f8fafc, #ffffff);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.group-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.group-progress {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* Weight badge enhancements */
+.weight-badge {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+  transition: all 0.2s ease;
+}
+
+.weight-badge:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
+}
+
+/* Priority indicators */
+.priority-high {
+  color: #ef4444;
+  filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.5));
+}
+
+.priority-medium {
+  color: #f59e0b;
+  filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.5));
+}
+
+.priority-low {
+  color: #3b82f6;
+  filter: drop-shadow(0 0 3px rgba(59, 130, 246, 0.5));
+}
+
+/* Responsive design enhancements */
+@media (max-width: 768px) {
+  .task-high-priority,
+  .task-medium-priority,
+  .task-low-priority {
+    margin-left: 0;
+  }
+  
+  .task-medium-priority {
+    margin-top: 4px;
+  }
+  
+  .task-low-priority {
+    margin-top: 8px;
+  }
+}
+
+/* Error and success states */
+.error-message {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border-left: 4px solid #ef4444;
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
+.success-message {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border-left: 4px solid #22c55e;
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #94a3b8, #64748b);
+}
+
+/* Focus styles for better accessibility */
+input:focus,
+button:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  border-color: #6366f1;
+}
+
+/* Utility classes for animations */
+.animate-fadeIn {
+  animation: fadeInScale 0.5s ease-out;
+}
+
+.animate-slideLeft {
+  animation: slideInFromLeft 0.5s ease-out;
+}
+
+.animate-slideRight {
+  animation: slideInFromRight 0.5s ease-out;
+}
+
+.animate-bounce {
+  animation: bounce 0.6s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
