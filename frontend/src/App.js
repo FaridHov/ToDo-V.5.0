@@ -598,8 +598,8 @@ function App() {
           {/* Edit Category Modal */}
           {editingCategory && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-                <h3 className="text-lg font-semibold mb-4">✏️ Редактировать категорию</h3>
+              <div className="glass-window p-6 max-w-md w-full mx-4">
+                <h3 className="text-lg font-semibold mb-4 dark-blue-text">✏️ Редактировать категорию</h3>
                 <input
                   type="text"
                   defaultValue={editingCategory.name}
