@@ -121,19 +121,22 @@ body {
 .task-low-priority {
   margin-left: 40px;
   border-left: 4px solid #3b82f6;
-  background: linear-gradient(135deg, #eff6ff, #ffffff);
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.1), rgba(255, 255, 255, 0.05));
   animation: slideInFromRight 0.3s ease-out;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .task-pinned {
   margin-left: 0px;
   border: 2px solid #dc2626;
   border-left: 6px solid #dc2626;
-  background: linear-gradient(135deg, #fef2f2, #ffffff);
+  background: linear-gradient(135deg, rgba(254, 242, 242, 0.15), rgba(255, 255, 255, 0.1));
   animation: pulse 2s infinite;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
   position: relative;
+  backdrop-filter: blur(15px);
 }
 
 .task-pinned::before {
