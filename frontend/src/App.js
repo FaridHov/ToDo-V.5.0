@@ -467,20 +467,19 @@ function App() {
 
         {/* Error Alert */}
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 relative">
-            {error}
+          <div className="glass-window border-red-400 p-4 mb-6 relative">
+            <div className="text-red-300">{error}</div>
             <button 
               onClick={() => setError('')}
-              className="absolute top-0 bottom-0 right-0 px-4 py-3"
+              className="absolute top-2 right-2 text-red-300 hover:text-red-100 text-xl"
             >
-              <span className="text-2xl">&times;</span>
+              &times;
             </button>
           </div>
         )}
 
         {/* Progress Bars Section */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-6 text-gray-800">📊 Прогресс по категориям</h2>
+        <div className="glass-window p-6 mb-8">
           
           {progress.length === 0 ? (
             <p className="text-gray-500 text-center py-8">Пока нет категорий. Создайте первую категорию ниже.</p>
