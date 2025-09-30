@@ -82,7 +82,7 @@ function App() {
   
   // Form states
   const [newCategoryName, setNewCategoryName] = useState('');
-  const [newCategoryGroup, setNewCategoryGroup] = useState('default');
+  const [newCategoryGroup, setNewCategoryGroup] = useState('work');
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskWeight, setNewTaskWeight] = useState(1);
