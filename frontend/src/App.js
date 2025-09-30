@@ -29,6 +29,57 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
+  // LocalStorage functions
+  const saveToLocalStorage = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/export`);
+      if (!response.ok) throw new Error('Failed to export data');
+      const data = await response.json();
+      localStorage.setItem('progressTrackerData', JSON.stringify(data));
+      alert('Данные сохранены в браузере!');
+    } catch (err) {
+      setError('Ошибка сохранения: ' + err.message);
+    }
+  };
+
+  const loadFromLocalStorage = async () => {
+    try {
+      const savedData = localStorage.getItem('progressTrackerData');
+      if (!savedData) {
+        alert('Нет сохраненных данных в браузере');
+        return;
+      }
+      
+      const response = await fetch(`${API_URL}/api/import`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: savedData
+      });
+      
+      if (!response.ok) throw new Error('Failed to import data');
+      
+      await loadData();
+      alert('Данные загружены из браузера!');
+    } catch (err) {
+      setError('Ошибка загрузки: ' + err.message);
+    }
+  };
+
+  const clearAllData = async () => {
+    if (!window.confirm('Удалить ВСЕ данные? Это действие нельзя отменить!')) return;
+    
+    try {
+      const response = await fetch(`${API_URL}/api/clear-all`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Failed to clear data');
+      
+      localStorage.removeItem('progressTrackerData');
+      await loadData();
+      alert('Все данные удалены!');
+    } catch (err) {
+      setError('Ошибка очистки: ' + err.message);
+    }
+  };
+  
   // Form states
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryGroup, setNewCategoryGroup] = useState('default');
