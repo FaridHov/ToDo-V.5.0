@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+import LocalStorageManager from './LocalStorageManager';
 
 // Sound effects URLs (we'll create simple audio for demo)
 const SOUNDS = {
