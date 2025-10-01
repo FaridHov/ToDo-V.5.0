@@ -22,62 +22,15 @@ const playSound = (soundType) => {
 };
 
 function App() {
+  // Initialize LocalStorage Manager
+  const [storageManager] = useState(() => new LocalStorageManager());
+  
+  // State management
   const [categories, setCategories] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
-  // LocalStorage functions
-  const saveToLocalStorage = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/export`);
-      if (!response.ok) throw new Error('Failed to export data');
-      const data = await response.json();
-      localStorage.setItem('progressTrackerData', JSON.stringify(data));
-      alert('Данные сохранены в браузере!');
-    } catch (err) {
-      setError('Ошибка сохранения: ' + err.message);
-    }
-  };
-
-  const loadFromLocalStorage = async () => {
-    try {
-      const savedData = localStorage.getItem('progressTrackerData');
-      if (!savedData) {
-        alert('Нет сохраненных данных в браузере');
-        return;
-      }
-      
-      const response = await fetch(`${API_URL}/api/import`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: savedData
-      });
-      
-      if (!response.ok) throw new Error('Failed to import data');
-      
-      await loadData();
-      alert('Данные загружены из браузера!');
-    } catch (err) {
-      setError('Ошибка загрузки: ' + err.message);
-    }
-  };
-
-  const clearAllData = async () => {
-    if (!window.confirm('Удалить ВСЕ данные? Это действие нельзя отменить!')) return;
-    
-    try {
-      const response = await fetch(`${API_URL}/api/clear-all`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Failed to clear data');
-      
-      localStorage.removeItem('progressTrackerData');
-      await loadData();
-      alert('Все данные удалены!');
-    } catch (err) {
-      setError('Ошибка очистки: ' + err.message);
-    }
-  };
   
   // Form states
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -95,487 +48,386 @@ function App() {
   const [dragOverIndex, setDragOverIndex] = useState(null);
   
   const draggedOverRef = useRef(null);
+  const fileInputRef = useRef(null);
 
-  // Fetch functions
-  const fetchCategories = useCallback(async () => {
+  // Load data from localStorage
+  const loadData = useCallback(() => {
     try {
-      const response = await fetch(`${API_URL}/api/categories`);
-      if (!response.ok) throw new Error('Failed to fetch categories');
-      const data = await response.json();
-      setCategories(data);
-      if (data.length > 0 && !selectedCategoryId) {
-        setSelectedCategoryId(data[0].id);
+      setLoading(true);
+      const categoriesData = storageManager.getCategories();
+      const tasksData = storageManager.getTasks();
+      const progressData = storageManager.getProgress();
+      
+      setCategories(categoriesData);
+      setTasks(tasksData);
+      setProgress(progressData);
+      
+      // Auto-select first category if none selected
+      if (categoriesData.length > 0 && !selectedCategoryId) {
+        setSelectedCategoryId(categoriesData[0].id);
       }
+      
+      setError('');
     } catch (err) {
-      setError('Error loading categories: ' + err.message);
+      setError('Ошибка загрузки данных: ' + err.message);
+    } finally {
+      setLoading(false);
     }
-  }, [selectedCategoryId]);
+  }, [storageManager, selectedCategoryId]);
 
-  const fetchTasks = useCallback(async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/tasks`);
-      if (!response.ok) throw new Error('Failed to fetch tasks');
-      const data = await response.json();
-      setTasks(data);
-    } catch (err) {
-      setError('Error loading tasks: ' + err.message);
-    }
-  }, []);
-
-  const fetchProgress = useCallback(async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/progress`);
-      if (!response.ok) throw new Error('Failed to fetch progress');
-      const data = await response.json();
-      setProgress(data);
-    } catch (err) {
-      setError('Error loading progress: ' + err.message);
-    }
-  }, []);
-
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    await Promise.all([fetchCategories(), fetchTasks(), fetchProgress()]);
-    setLoading(false);
-  }, [fetchCategories, fetchTasks, fetchProgress]);
-
+  // Initial load
   useEffect(() => {
     loadData();
-  }, [loadData]);
+  }, []);
+
+  // Import/Export functions
+  const handleExportToFile = () => {
+    try {
+      storageManager.exportToFile();
+      alert('📁 Данные экспортированы в файл!');
+    } catch (err) {
+      setError('Ошибка экспорта: ' + err.message);
+    }
+  };
+
+  const handleImportFromFile = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    storageManager.importFromFile(file)
+      .then(() => {
+        loadData();
+        alert('📁 Данные успешно импортированы из файла!');
+        event.target.value = ''; // Reset file input
+      })
+      .catch(err => {
+        setError('Ошибка импорта: ' + err.message);
+        event.target.value = ''; // Reset file input
+      });
+  };
+
+  const handleClearAllData = () => {
+    if (!window.confirm('🗑️ Удалить ВСЕ данные? Это действие нельзя отменить!')) return;
+    
+    try {
+      storageManager.clearAllData();
+      loadData();
+      alert('🗑️ Все данные удалены!');
+    } catch (err) {
+      setError('Ошибка очистки: ' + err.message);
+    }
+  };
 
   // Category functions
-  const handleCreateCategory = async (e) => {
+  const handleCreateCategory = (e) => {
     e.preventDefault();
     if (!newCategoryName.trim()) return;
     
     try {
-      const response = await fetch(`${API_URL}/api/categories`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name: newCategoryName.trim(),
-          group: newCategoryGroup
-        })
+      storageManager.createCategory({
+        name: newCategoryName.trim(),
+        group: newCategoryGroup
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to create category');
-      }
       
       playSound('create');
       setNewCategoryName('');
-      setNewCategoryGroup('default');
-      await loadData();
+      setNewCategoryGroup('work');
+      loadData();
     } catch (err) {
-      setError('Error creating category: ' + err.message);
+      setError('Ошибка создания категории: ' + err.message);
     }
   };
 
-  const handleUpdateCategory = async (categoryId, updates) => {
+  const handleUpdateCategory = (categoryId, updates) => {
     try {
-      const response = await fetch(`${API_URL}/api/categories/${categoryId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to update category');
-      }
-      
+      storageManager.updateCategory(categoryId, updates);
       playSound('create');
       setEditingCategory(null);
-      await loadData();
+      loadData();
     } catch (err) {
-      setError('Error updating category: ' + err.message);
+      setError('Ошибка обновления категории: ' + err.message);
     }
   };
 
-  const handleDeleteCategory = async (categoryId) => {
-    if (!window.confirm('Вы уверены? Это удалит категорию и все её задачи.')) return;
+  const handleDeleteCategory = (categoryId) => {
+    if (!window.confirm('🗑️ Вы уверены? Это удалит категорию и все её задачи.')) return;
     
     try {
-      const response = await fetch(`${API_URL}/api/categories/${categoryId}`, {
-        method: 'DELETE'
-      });
-      
-      if (!response.ok) throw new Error('Failed to delete category');
-      
+      storageManager.deleteCategory(categoryId);
       playSound('delete');
       if (selectedCategoryId === categoryId) {
-        setSelectedCategoryId('');
+        const remaining = categories.filter(c => c.id !== categoryId);
+        setSelectedCategoryId(remaining.length > 0 ? remaining[0].id : '');
       }
-      await loadData();
+      loadData();
     } catch (err) {
-      setError('Error deleting category: ' + err.message);
+      setError('Ошибка удаления категории: ' + err.message);
     }
   };
 
   // Task functions
-  const handleCreateTask = async (e) => {
+  const handleCreateTask = (e) => {
     e.preventDefault();
     if (!newTaskTitle.trim() || !selectedCategoryId) return;
     
     try {
-      const response = await fetch(`${API_URL}/api/tasks`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: newTaskTitle.trim(),
-          weight: newTaskWeight,
-          category_id: selectedCategoryId,
-          priority: newTaskPriority
-        })
+      storageManager.createTask({
+        title: newTaskTitle.trim(),
+        weight: newTaskWeight,
+        category_id: selectedCategoryId,
+        priority: newTaskPriority
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to create task');
-      }
       
       playSound('create');
       setNewTaskTitle('');
       setNewTaskWeight(1);
       setNewTaskPriority('medium');
-      await loadData();
+      loadData();
     } catch (err) {
-      setError('Error creating task: ' + err.message);
+      setError('Ошибка создания задачи: ' + err.message);
     }
   };
 
-  const handleToggleTask = async (taskId, completed) => {
+  const handleToggleTask = (taskId, completed) => {
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed })
-      });
-      
-      if (!response.ok) throw new Error('Failed to update task');
-      
+      storageManager.updateTask(taskId, { completed });
       playSound(completed ? 'complete' : 'create');
-      await loadData();
+      loadData();
     } catch (err) {
-      setError('Error updating task: ' + err.message);
+      setError('Ошибка обновления задачи: ' + err.message);
     }
   };
 
-  const handleTogglePin = async (taskId, pinned) => {
+  const handleUpdateTask = (taskId, updates) => {
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pinned })
-      });
-      
-      if (!response.ok) throw new Error('Failed to update task');
-      
-      playSound('create');
-      await loadData();
-    } catch (err) {
-      setError('Error updating task: ' + err.message);
-    }
-  };
-
-  const handleUpdateTask = async (taskId, updates) => {
-    try {
-      const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to update task');
-      }
-      
+      storageManager.updateTask(taskId, updates);
       playSound('create');
       setEditingTask(null);
-      await loadData();
+      loadData();
     } catch (err) {
-      setError('Error updating task: ' + err.message);
+      setError('Ошибка обновления задачи: ' + err.message);
     }
   };
 
-  const handleDeleteTask = async (taskId) => {
-    if (!window.confirm('Удалить эту задачу?')) return;
+  const handleDeleteTask = (taskId) => {
+    if (!window.confirm('🗑️ Удалить эту задачу?')) return;
     
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
-        method: 'DELETE'
-      });
-      
-      if (!response.ok) throw new Error('Failed to delete task');
-      
+      storageManager.deleteTask(taskId);
       playSound('delete');
-      await loadData();
+      loadData();
     } catch (err) {
-      setError('Error deleting task: ' + err.message);
+      setError('Ошибка удаления задачи: ' + err.message);
     }
   };
 
-  // Drag & Drop functions for categories
+  const handleTogglePin = (taskId, pinned) => {
+    try {
+      storageManager.updateTask(taskId, { pinned });
+      playSound('create');
+      loadData();
+    } catch (err) {
+      setError('Ошибка закрепления задачи: ' + err.message);
+    }
+  };
+
+  // Drag & Drop handlers
   const handleCategoryDragStart = (e, category, index) => {
     setDraggedCategory({ category, index });
-    e.dataTransfer.effectAllowed = 'move';
     playSound('drag');
   };
 
-  const handleCategoryDragOver = (e, index) => {
+  const handleCategoryDrop = (e, targetIndex) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDragOverIndex(index);
-  };
-
-  const handleCategoryDrop = async (e, dropIndex) => {
-    e.preventDefault();
-    if (!draggedCategory || draggedCategory.index === dropIndex) {
+    if (!draggedCategory || draggedCategory.index === targetIndex) return;
+    
+    try {
+      const newOrder = [...categories];
+      const [movedCategory] = newOrder.splice(draggedCategory.index, 1);
+      newOrder.splice(targetIndex, 0, movedCategory);
+      
+      const categoryIds = newOrder.map(c => c.id);
+      storageManager.reorderCategories(categoryIds);
+      
       setDraggedCategory(null);
       setDragOverIndex(null);
-      return;
-    }
-
-    // Reorder categories
-    const reorderedCategories = [...categories];
-    const [removed] = reorderedCategories.splice(draggedCategory.index, 1);
-    reorderedCategories.splice(dropIndex, 0, removed);
-
-    // Update order in backend
-    const orderUpdates = reorderedCategories.map((cat, index) => ({
-      id: cat.id,
-      order: index
-    }));
-
-    try {
-      await fetch(`${API_URL}/api/categories/reorder`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderUpdates)
-      });
-      
       playSound('complete');
-      await loadData();
+      loadData();
     } catch (err) {
-      setError('Error reordering categories: ' + err.message);
+      setError('Ошибка перемещения категории: ' + err.message);
     }
-
-    setDraggedCategory(null);
-    setDragOverIndex(null);
   };
 
-  // Drag & Drop functions for tasks
   const handleTaskDragStart = (e, task, index) => {
     setDraggedTask({ task, index });
-    e.dataTransfer.effectAllowed = 'move';
     playSound('drag');
   };
 
-  const handleTaskDrop = async (e, dropIndex) => {
+  const handleTaskDrop = (e, targetIndex) => {
     e.preventDefault();
-    if (!draggedTask || draggedTask.index === dropIndex) {
-      setDraggedTask(null);
-      return;
-    }
-
-    const categoryTasks = tasks.filter(t => t.category_id === selectedCategoryId);
-    const reorderedTasks = [...categoryTasks];
-    const [removed] = reorderedTasks.splice(draggedTask.index, 1);
-    reorderedTasks.splice(dropIndex, 0, removed);
-
-    // Update order in backend
-    const orderUpdates = reorderedTasks.map((task, index) => ({
-      id: task.id,
-      order: index
-    }));
-
+    if (!draggedTask || draggedTask.index === targetIndex) return;
+    
     try {
-      await fetch(`${API_URL}/api/tasks/reorder`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderUpdates)
-      });
+      const categoryTasks = filteredTasks;
+      const newOrder = [...categoryTasks];
+      const [movedTask] = newOrder.splice(draggedTask.index, 1);
+      newOrder.splice(targetIndex, 0, movedTask);
       
+      const taskIds = newOrder.map(t => t.id);
+      storageManager.reorderTasks(selectedCategoryId, taskIds);
+      
+      setDraggedTask(null);
+      setDragOverIndex(null);
       playSound('complete');
-      await loadData();
+      loadData();
     } catch (err) {
-      setError('Error reordering tasks: ' + err.message);
+      setError('Ошибка перемещения задачи: ' + err.message);
     }
-
-    setDraggedTask(null);
   };
 
-  // Get priority class for visual cascading effect
+  // Helper functions
   const getPriorityClass = (priority, pinned) => {
-    if (pinned) return 'task-pinned';
+    let classes = '';
+    if (pinned) classes += 'ring-2 ring-red-400 ';
+    
     switch (priority) {
-      case 'high': return 'task-high-priority';
-      case 'medium': return 'task-medium-priority';
-      case 'low': return 'task-low-priority';
-      default: return 'task-medium-priority';
+      case 'high': return classes + 'border-l-4 border-red-400 bg-red-50';
+      case 'medium': return classes + 'border-l-4 border-yellow-400 bg-yellow-50';
+      case 'low': return classes + 'border-l-4 border-blue-400 bg-blue-50';
+      default: return classes + 'border-l-4 border-gray-400 bg-gray-50';
     }
   };
 
-  // Get unique groups
-  const getUniqueGroups = () => {
-    const groups = new Set(categories.map(cat => cat.group || 'default'));
-    return Array.from(groups);
-  };
+  // Get filtered tasks for selected category
+  const filteredTasks = selectedCategoryId 
+    ? tasks.filter(task => task.category_id === selectedCategoryId)
+    : [];
 
-  // Filter tasks for selected category
-  const filteredTasks = tasks.filter(task => task.category_id === selectedCategoryId);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="glass-window p-8">
-          <div className="text-xl dark-blue-text">Загрузка...</div>
-        </div>
-      </div>
-    );
-  }
+  // Get grouped progress
+  const groupedProgress = storageManager.getGroupedProgress();
 
   return (
-    <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-8">
-        {/* Data Management Controls */}
-        <div className="glass-window p-4 mb-6">
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={saveToLocalStorage}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              💾 Сохранить данные
-            </button>
-            <button
-              onClick={loadFromLocalStorage}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-            >
-              📁 Загрузить данные
-            </button>
-            <button
-              onClick={clearAllData}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              🗑️ Очистить все
-            </button>
+    <div className="min-h-screen p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        {/* Header with Import/Export */}
+        <div className="glass-window p-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold dark-blue-text">📊 Трекер Прогресса</h1>
+              <p className="dark-blue-text-secondary">LocalStorage Edition - Без сервера!</p>
+            </div>
+            
+            {/* Import/Export Controls */}
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={handleExportToFile}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                📁 Экспорт в файл
+              </button>
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleImportFromFile}
+                className="hidden"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                📁 Импорт из файла
+              </button>
+              
+              <button
+                onClick={handleClearAllData}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+              >
+                🗑️ Очистить всё
+              </button>
+            </div>
           </div>
-        </div>
-
-        {/* Error Alert */}
-        {error && (
-          <div className="glass-window border-red-400 p-4 mb-6 relative">
-            <div className="text-red-300">{error}</div>
-            <button 
-              onClick={() => setError('')}
-              className="absolute top-2 right-2 text-red-300 hover:text-red-100 text-xl"
-            >
-              &times;
-            </button>
-          </div>
-        )}
-
-        {/* Progress Bars Section */}
-        <div className="glass-window p-6 mb-8">
           
-          {progress.length === 0 ? (
-            <p className="dark-blue-text-secondary text-center py-8">Пока нет категорий. Создайте первую категорию ниже.</p>
-          ) : (
-            <div className="space-y-6">
-              {/* Group by categories */}
-              {getUniqueGroups().map(group => {
-                const groupProgress = progress.filter(p => p.category_group === group);
-                const avgProgress = groupProgress.reduce((sum, p) => sum + p.progress_percentage, 0) / groupProgress.length;
-                
-                return (
-                  <div key={group} className="glass-card rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-3">
-                      <h3 className="text-lg font-semibold dark-blue-text capitalize">📁 {group}</h3>
-                      <span className="text-sm font-bold text-blue-300">
-                        Средний: {Math.round(avgProgress)}%
-                      </span>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {groupProgress.map((prog, index) => (
-                        <div 
-                          key={prog.category_id}
-                          draggable
-                          onDragStart={(e) => handleCategoryDragStart(e, prog, index)}
-                          onDragOver={(e) => handleCategoryDragOver(e, index)}
-                          onDrop={(e) => handleCategoryDrop(e, index)}
-                          className={`category-card rounded-lg p-4 transition-all duration-300 cursor-move ${
-                            dragOverIndex === index ? 'border-blue-400' : ''
-                          }`}
-                        >
-                          <div className="flex justify-between items-center mb-2">
-                            <h4 className="font-semibold dark-blue-text">{prog.category_name}</h4>
-                            <span className="text-sm font-bold text-blue-300">
-                              {Math.round(prog.progress_percentage)}%
-                            </span>
-                          </div>
-                          
-                          <div className="w-full bg-gray-700 rounded-full h-4 mb-2 overflow-hidden">
-                            <div 
-                              className="progress-bar-animated h-4 rounded-full transition-all duration-1000 ease-out"
-                              style={{ 
-                                width: `${prog.progress_percentage}%`
-                              }}
-                            ></div>
-                          </div>
-                          
-                          <div className="text-xs dark-blue-text-secondary mb-2">
-                            {prog.completed_weight} из {prog.total_weight} очков
-                          </div>
-                          
-                          <div className="text-xs dark-blue-text-secondary">
-                            {prog.completed_task_count}/{prog.task_count} задач
-                          </div>
-                          
-                          <div className="flex gap-1 mt-2">
-                            <button
-                              onClick={() => setSelectedCategoryId(prog.category_id)}
-                              className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition-colors"
-                            >
-                              Выбрать
-                            </button>
-                            <button
-                              onClick={() => setEditingCategory({ id: prog.category_id, name: prog.category_name, group: prog.category_group })}
-                              className="text-xs bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 transition-colors"
-                            >
-                              ✏️
-                            </button>
-                            <button
-                              onClick={() => handleDeleteCategory(prog.category_id)}
-                              className="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 transition-colors"
-                            >
-                              🗑️
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+          {error && (
+            <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              ❌ {error}
+              <button 
+                onClick={() => setError('')}
+                className="ml-2 text-red-500 hover:text-red-700"
+              >
+                ✖️
+              </button>
             </div>
           )}
         </div>
 
-        {/* Category Management */}
-        <div className="glass-window p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4 dark-blue-text">🏷️ Управление категориями</h2>
+        {loading && (
+          <div className="glass-window p-6 text-center">
+            <div className="dark-blue-text">⏳ Загрузка данных...</div>
+          </div>
+        )}
+
+        {/* Progress Overview */}
+        <div className="glass-window p-6">
+          <h2 className="text-2xl font-semibold mb-6 dark-blue-text">📈 Обзор прогресса</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Object.values(groupedProgress).map(group => (
+              <div key={group.group} className="space-y-4">
+                <h3 className="text-lg font-semibold dark-blue-text">{group.name}</h3>
+                
+                {/* Group Progress Bar */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm dark-blue-text-secondary">
+                    <span>Общий прогресс группы</span>
+                    <span>{group.total_progress.toFixed(1)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-300 rounded-full h-3">
+                    <div
+                      className="progress-bar-animated h-3 rounded-full transition-all duration-500"
+                      style={{ width: `${group.total_progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Individual Category Progress */}
+                <div className="space-y-2">
+                  {group.categories.map(categoryProgress => (
+                    <div key={categoryProgress.category_id} className="space-y-1">
+                      <div className="flex justify-between text-xs dark-blue-text-secondary">
+                        <span>{categoryProgress.category_name}</span>
+                        <span>
+                          {categoryProgress.completed_task_count}/{categoryProgress.task_count} задач
+                          ({categoryProgress.progress_percentage.toFixed(1)}%)
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${categoryProgress.progress_percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Categories Section */}
+        <div className="glass-window p-6">
+          <h2 className="text-2xl font-semibold mb-6 dark-blue-text">📂 Категории</h2>
           
           {/* Create Category Form */}
-          <form onSubmit={handleCreateCategory} className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
+          <form onSubmit={handleCreateCategory} className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-6">
             <input
               type="text"
               value={newCategoryName}
               onChange={(e) => setNewCategoryName(e.target.value)}
-              placeholder="Название новой категории"
-              className="glass-input md:col-span-2 px-3 py-2 rounded-md focus:outline-none transition-colors"
+              placeholder="Название категории"
+              className="glass-input md:col-span-2 px-3 py-2 rounded-md focus:outline-none"
             />
             <select
               value={newCategoryGroup}
@@ -590,10 +442,81 @@ function App() {
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none transition-colors"
             >
-              ➕ Создать
+              ➕ Добавить
             </button>
           </form>
-          
+
+          {/* Categories List */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {categories.map((category, index) => (
+              <div
+                key={category.id}
+                draggable
+                onDragStart={(e) => handleCategoryDragStart(e, category, index)}
+                onDragOver={(e) => { e.preventDefault(); setDragOverIndex(index); }}
+                onDrop={(e) => handleCategoryDrop(e, index)}
+                className={`group p-4 border rounded-lg cursor-move transition-all duration-300 hover:shadow-lg ${
+                  selectedCategoryId === category.id
+                    ? 'bg-blue-100 border-blue-400'
+                    : 'bg-white border-gray-200'
+                } ${dragOverIndex === index ? 'border-indigo-400 bg-indigo-50' : ''}`}
+                onClick={() => setSelectedCategoryId(category.id)}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h3 className="font-semibold dark-blue-text">{category.name}</h3>
+                    <p className="text-sm dark-blue-text-secondary">
+                      {category.group === 'work' && '💼 Работа'}
+                      {category.group === 'personal' && '🏠 Личная'}
+                      {category.group === 'health' && '💪 Здоровье'}
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingCategory(category);
+                      }}
+                      className="p-1 text-blue-600 hover:bg-blue-100 rounded"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCategory(category.id);
+                      }}
+                      className="p-1 text-red-600 hover:bg-red-100 rounded"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Category Progress */}
+                {progress.find(p => p.category_id === category.id) && (
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs dark-blue-text-secondary">
+                      <span>Прогресс</span>
+                      <span>
+                        {progress.find(p => p.category_id === category.id)?.progress_percentage.toFixed(1)}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                        style={{ 
+                          width: `${progress.find(p => p.category_id === category.id)?.progress_percentage || 0}%` 
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
           {/* Edit Category Modal */}
           {editingCategory && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -799,11 +722,11 @@ function App() {
                                 : 'bg-gray-600 text-white hover:bg-gray-700'
                             }`}
                           >
-                            {task.pinned ? '📌' : '📌'}
+                            📌
                           </button>
                           <button
                             onClick={() => setEditingTask(task)}
-                            className="px-2 py-1 text-xs bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
+                            className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                           >
                             ✏️
                           </button>
