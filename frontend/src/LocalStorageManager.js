@@ -177,29 +177,22 @@ class LocalStorageManager {
     });
   }
 
-  getGroupedProgress() {
+  getOverallProgress() {
     const progress = this.getProgress();
-    const groups = {};
+    const categories = this.getCategories();
     
-    Object.keys(DEFAULT_GROUPS).forEach(groupKey => {
-      const groupProgress = progress.filter(p => {
-        const category = this.getCategories().find(c => c.id === p.category_id);
-        return category && category.group === groupKey;
-      });
-      
-      const totalWeight = groupProgress.reduce((sum, p) => sum + p.total_weight, 0);
-      const completedWeight = groupProgress.reduce((sum, p) => sum + p.completed_weight, 0);
-      const avgProgress = totalWeight > 0 ? (completedWeight / totalWeight) * 100 : 0;
-      
-      groups[groupKey] = {
-        group: groupKey,
-        name: DEFAULT_GROUPS[groupKey],
-        categories: groupProgress,
-        total_progress: Math.round(avgProgress * 100) / 100
-      };
-    });
+    // Calculate overall progress across all categories
+    const totalWeight = progress.reduce((sum, p) => sum + p.total_weight, 0);
+    const completedWeight = progress.reduce((sum, p) => sum + p.completed_weight, 0);
+    const overallProgress = totalWeight > 0 ? (completedWeight / totalWeight) * 100 : 0;
     
-    return groups;
+    return {
+      total_categories: categories.length,
+      total_tasks: progress.reduce((sum, p) => sum + p.task_count, 0),
+      completed_tasks: progress.reduce((sum, p) => sum + p.completed_task_count, 0),
+      overall_progress: Math.round(overallProgress * 100) / 100,
+      categories: progress
+    };
   }
 
   // Import/Export functionality
