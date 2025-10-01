@@ -344,8 +344,8 @@ function App() {
     ? tasks.filter(task => task.category_id === selectedCategoryId)
     : [];
 
-  // Get grouped progress
-  const groupedProgress = storageManager.getGroupedProgress();
+  // Get overall progress
+  const overallProgress = storageManager.getOverallProgress();
 
   return (
     <div className="min-h-screen p-6">
