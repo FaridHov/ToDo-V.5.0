@@ -176,10 +176,32 @@ body {
 }
 
 .theme-selector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
   margin: 10px 0;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Custom scrollbar for theme selector */
+.theme-selector::-webkit-scrollbar {
+  width: 6px;
+}
+
+.theme-selector::-webkit-scrollbar-track {
+  background: var(--theme-input, rgba(50, 50, 50, 0.9));
+  border-radius: 3px;
+}
+
+.theme-selector::-webkit-scrollbar-thumb {
+  background: var(--theme-accent, #00d4ff);
+  border-radius: 3px;
+}
+
+.theme-selector::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-text, #ffffff);
 }
 
 .theme-option {
