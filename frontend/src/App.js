@@ -424,7 +424,7 @@ function App() {
 
         {/* Progress Overview */}
         <div className="glass-window p-6">
-          <h2 className="text-2xl font-semibold mb-6 dark-blue-text">📈 Обзор прогресса</h2>
+          <h2 className="text-2xl font-semibold mb-6 theme-text">📈 Обзор прогресса</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {Object.values(groupedProgress).map(group => (
               <div key={group.group} className="space-y-4">
