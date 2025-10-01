@@ -146,6 +146,13 @@ function App() {
     setCurrentTheme(themeName);
     setShowThemeSelector(false);
     playSound('create');
+    showNotification(`Тема изменена на: ${THEMES[themeName]?.name}`);
+  };
+
+  // Notification function
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => setNotification(''), 3000);
   };
 
   // Category functions
