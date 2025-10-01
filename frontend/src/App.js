@@ -322,19 +322,58 @@ function App() {
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Header with Import/Export */}
+        {/* Header with Theme Selector and Import/Export */}
         <div className="glass-window p-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-              <h1 className="text-3xl font-bold dark-blue-text">📊 Трекер Прогресса</h1>
-              <p className="dark-blue-text-secondary">LocalStorage Edition - Без сервера!</p>
-            </div>
+          <div className="flex flex-col gap-4">
             
-            {/* Import/Export Controls */}
-            <div className="flex flex-wrap gap-2">
+            {/* Top row - Title and Theme */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div>
+                <h1 className="text-3xl font-bold theme-text">📊 Трекер Прогресса</h1>
+                <p className="theme-text-secondary">LocalStorage Edition - Без сервера!</p>
+              </div>
+              
+              {/* Theme Selector */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowThemeSelector(!showThemeSelector)}
+                  className="theme-button px-4 py-2 rounded-md"
+                >
+                  🎨 {THEMES[currentTheme]?.name || 'Тема'}
+                </button>
+                
+                {showThemeSelector && (
+                  <div className="absolute right-0 top-full mt-2 z-50 glass-window p-4 min-w-[300px] max-h-[400px] overflow-y-auto">
+                    <h3 className="theme-text text-lg font-semibold mb-3">Выберите тему:</h3>
+                    <div className="theme-selector grid grid-cols-2 gap-2">
+                      {Object.keys(THEMES).map(themeKey => (
+                        <div
+                          key={themeKey}
+                          onClick={() => handleThemeChange(themeKey)}
+                          className={`theme-option cursor-pointer ${
+                            currentTheme === themeKey ? 'active' : ''
+                          }`}
+                        >
+                          {THEMES[themeKey].name}
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => setShowThemeSelector(false)}
+                      className="theme-button w-full mt-3 py-2"
+                    >
+                      ✖️ Закрыть
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Bottom row - Import/Export Controls */}
+            <div className="flex flex-wrap gap-2 justify-center md:justify-end">
               <button
                 onClick={handleExportToFile}
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                className="theme-button theme-button-success px-4 py-2 rounded-md"
               >
                 📁 Экспорт в файл
               </button>
@@ -348,14 +387,14 @@ function App() {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="theme-button px-4 py-2 rounded-md"
               >
                 📁 Импорт из файла
               </button>
               
               <button
                 onClick={handleClearAllData}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                className="theme-button theme-button-danger px-4 py-2 rounded-md"
               >
                 🗑️ Очистить всё
               </button>
