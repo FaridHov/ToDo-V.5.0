@@ -4,11 +4,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
 const STORAGE_KEY = 'progressTrackerData';
-const DEFAULT_GROUPS = {
-  work: 'Работа',
-  personal: 'Личная', 
-  health: 'Здоровье'
-};
 
 class LocalStorageManager {
   constructor() {
