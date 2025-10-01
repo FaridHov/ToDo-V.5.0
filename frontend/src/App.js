@@ -84,6 +84,23 @@ function App() {
     loadData();
   }, []);
 
+  // Close theme selector when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showThemeSelector && !event.target.closest('.theme-selector-container')) {
+        setShowThemeSelector(false);
+      }
+    };
+
+    if (showThemeSelector) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showThemeSelector]);
+
   // Import/Export functions
   const handleExportToFile = () => {
     try {
