@@ -476,48 +476,73 @@ function App() {
         {/* Progress Overview */}
         <div className="glass-window p-6">
           <h2 className="text-2xl font-semibold mb-6 theme-text">📈 Обзор прогресса</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {Object.values(groupedProgress).map(group => (
-              <div key={group.group} className="space-y-4">
-                <h3 className="text-lg font-semibold theme-text">{group.name}</h3>
-                
-                {/* Group Progress Bar */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm theme-text-secondary">
-                    <span>Общий прогресс группы</span>
-                    <span>{group.total_progress.toFixed(1)}%</span>
-                  </div>
-                  <div className="w-full bg-gray-300 rounded-full h-3">
-                    <div
-                      className="progress-bar-animated h-3 rounded-full transition-all duration-500"
-                      style={{ width: `${group.total_progress}%` }}
-                    />
-                  </div>
-                </div>
+          
+          {/* Overall Progress */}
+          <div className="mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold theme-text">{overallProgress.total_categories}</div>
+                <div className="text-sm theme-text-secondary">Категорий</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold theme-text">{overallProgress.total_tasks}</div>
+                <div className="text-sm theme-text-secondary">Всего задач</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold theme-text">{overallProgress.completed_tasks}</div>
+                <div className="text-sm theme-text-secondary">Выполнено</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold theme-text">{overallProgress.overall_progress.toFixed(1)}%</div>
+                <div className="text-sm theme-text-secondary">Общий прогресс</div>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="w-full bg-gray-300 rounded-full h-4">
+                <div
+                  className="progress-bar-animated h-4 rounded-full transition-all duration-500"
+                  style={{ width: `${overallProgress.overall_progress}%` }}
+                />
+              </div>
+            </div>
+          </div>
 
-                {/* Individual Category Progress */}
-                <div className="space-y-2">
-                  {group.categories.map(categoryProgress => (
-                    <div key={categoryProgress.category_id} className="space-y-1">
-                      <div className="flex justify-between text-xs theme-text-secondary">
-                        <span>{categoryProgress.category_name}</span>
-                        <span>
-                          {categoryProgress.completed_task_count}/{categoryProgress.task_count} задач
-                          ({categoryProgress.progress_percentage.toFixed(1)}%)
-                        </span>
+          {/* Individual Categories Progress */}
+          {overallProgress.categories.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold theme-text">Прогресс по категориям</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {overallProgress.categories.map(categoryProgress => {
+                  const category = categories.find(c => c.id === categoryProgress.category_id);
+                  return (
+                    <div key={categoryProgress.category_id} className="space-y-2 p-4 glass-window rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: category?.color || '#3B82F6' }}
+                        ></div>
+                        <span className="font-medium theme-text">{categoryProgress.category_name}</span>
+                      </div>
+                      <div className="flex justify-between text-sm theme-text-secondary">
+                        <span>{categoryProgress.completed_task_count}/{categoryProgress.task_count} задач</span>
+                        <span>{categoryProgress.progress_percentage.toFixed(1)}%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${categoryProgress.progress_percentage}%` }}
+                          className="h-2 rounded-full transition-all duration-300"
+                          style={{ 
+                            width: `${categoryProgress.progress_percentage}%`,
+                            backgroundColor: category?.color || '#3B82F6'
+                          }}
                         />
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Categories Section */}
