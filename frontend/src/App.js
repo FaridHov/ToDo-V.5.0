@@ -23,8 +23,9 @@ const playSound = (soundType) => {
 };
 
 function App() {
-  // Initialize LocalStorage Manager
+  // Initialize managers
   const [storageManager] = useState(() => new LocalStorageManager());
+  const [themeManager] = useState(() => new ThemeManager());
   
   // State management
   const [categories, setCategories] = useState([]);
