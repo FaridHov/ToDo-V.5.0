@@ -359,6 +359,14 @@ function App() {
               <div>
                 <h1 className="text-3xl font-bold theme-text">📊 Трекер Прогресса</h1>
                 <p className="theme-text-secondary">LocalStorage Edition - Без сервера!</p>
+                {categories.length === 0 && (
+                  <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <p className="text-sm text-blue-800">
+                      🚀 <strong>Как пользоваться:</strong> Создайте категории, добавьте задачи и отслеживайте прогресс. 
+                      Все данные сохраняются автоматически в браузере!
+                    </p>
+                  </div>
+                )}
               </div>
               
               {/* Theme Selector */}
