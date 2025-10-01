@@ -33,6 +33,8 @@ function App() {
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [currentTheme, setCurrentTheme] = useState(themeManager.getCurrentTheme());
+  const [showThemeSelector, setShowThemeSelector] = useState(false);
   
   // Form states
   const [newCategoryName, setNewCategoryName] = useState('');
