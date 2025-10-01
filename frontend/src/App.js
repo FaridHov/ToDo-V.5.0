@@ -442,6 +442,20 @@ function App() {
               </div>
             </div>
           )}
+
+          {notification && (
+            <div className="mt-4 p-3 glass-window border-2 border-green-500 rounded animate-pulse">
+              <div className="flex justify-between items-center">
+                <span className="theme-text">{notification}</span>
+                <button 
+                  onClick={() => setNotification('')}
+                  className="theme-button theme-button-success px-3 py-1 text-sm"
+                >
+                  ✖️
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {loading && (
