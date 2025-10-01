@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import LocalStorageManager from './LocalStorageManager';
+import ThemeManager, { THEMES } from './ThemeManager';
 
 // Sound effects URLs (we'll create simple audio for demo)
 const SOUNDS = {
