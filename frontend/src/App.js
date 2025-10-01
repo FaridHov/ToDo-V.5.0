@@ -187,7 +187,8 @@ function App() {
   };
 
   const handleDeleteCategory = (categoryId) => {
-    if (!window.confirm('🗑️ Вы уверены? Это удалит категорию и все её задачи.')) return;
+    const category = categories.find(c => c.id === categoryId);
+    if (!window.confirm(`🗑️ Вы уверены? Это удалит категорию "${category?.name}" и все её задачи.`)) return;
     
     try {
       storageManager.deleteCategory(categoryId);
@@ -196,9 +197,11 @@ function App() {
         const remaining = categories.filter(c => c.id !== categoryId);
         setSelectedCategoryId(remaining.length > 0 ? remaining[0].id : '');
       }
+      showNotification(`✅ Категория "${category?.name}" успешно удалена`);
       loadData();
     } catch (err) {
       setError('Ошибка удаления категории: ' + err.message);
+      showNotification('❌ Ошибка при удалении категории');
     }
   };
 
