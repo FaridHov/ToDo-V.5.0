@@ -163,12 +163,13 @@ function App() {
     try {
       storageManager.createCategory({
         name: newCategoryName.trim(),
-        group: newCategoryGroup
+        color: newCategoryColor
       });
       
       playSound('create');
       setNewCategoryName('');
-      setNewCategoryGroup('work');
+      setNewCategoryColor('#3B82F6');
+      showNotification(`✅ Категория "${newCategoryName.trim()}" создана`);
       loadData();
     } catch (err) {
       setError('Ошибка создания категории: ' + err.message);
