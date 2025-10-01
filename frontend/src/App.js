@@ -122,6 +122,14 @@ function App() {
     }
   };
 
+  // Theme functions
+  const handleThemeChange = (themeName) => {
+    themeManager.setTheme(themeName);
+    setCurrentTheme(themeName);
+    setShowThemeSelector(false);
+    playSound('create');
+  };
+
   // Category functions
   const handleCreateCategory = (e) => {
     e.preventDefault();
