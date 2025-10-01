@@ -493,7 +493,7 @@ function App() {
             </select>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none transition-colors"
+              className="px-4 py-2 theme-button focus:outline-none transition-colors"
             >
               ➕ Добавить
             </button>
@@ -608,7 +608,7 @@ function App() {
                         group: groupSelect.value
                       });
                     }}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    className="px-4 py-2 theme-button transition-colors"
                   >
                     💾 Сохранить
                   </button>
@@ -671,7 +671,7 @@ function App() {
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none transition-colors"
+                className="px-4 py-2 theme-button focus:outline-none transition-colors"
               >
                 ➕
               </button>
@@ -736,7 +736,7 @@ function App() {
                               priority: prioritySelect.value
                             });
                           }}
-                          className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm transition-colors"
+                          className="px-2 py-1 theme-button theme-button-success text-sm transition-colors"
                         >
                           ✅
                         </button>
@@ -785,7 +785,7 @@ function App() {
                           </button>
                           <button
                             onClick={() => handleDeleteTask(task.id)}
-                            className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                            className="px-2 py-1 text-xs theme-button theme-button-danger transition-colors"
                           >
                             🗑️
                           </button>
