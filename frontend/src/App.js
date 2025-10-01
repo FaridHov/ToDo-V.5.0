@@ -379,7 +379,7 @@ function App() {
                 </button>
                 
                 {showThemeSelector && (
-                  <div className="absolute right-0 top-full mt-2 z-50 glass-window p-4 min-w-[350px] max-h-[500px] overflow-y-auto">
+                  <div className="fixed right-4 top-20 z-[9999] glass-window p-4 min-w-[350px] max-h-[500px] overflow-y-auto shadow-2xl border border-gray-300">
                     <h3 className="theme-text text-lg font-semibold mb-3">Выберите тему:</h3>
                     <div className="theme-selector grid grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-2">
                       {Object.keys(THEMES).map(themeKey => (
