@@ -402,14 +402,16 @@ function App() {
           </div>
           
           {error && (
-            <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              ❌ {error}
-              <button 
-                onClick={() => setError('')}
-                className="ml-2 text-red-500 hover:text-red-700"
-              >
-                ✖️
-              </button>
+            <div className="mt-4 p-3 glass-window border-2 border-red-500 rounded">
+              <div className="flex justify-between items-center">
+                <span className="theme-text">❌ {error}</span>
+                <button 
+                  onClick={() => setError('')}
+                  className="theme-button theme-button-danger px-3 py-1 text-sm"
+                >
+                  ✖️
+                </button>
+              </div>
             </div>
           )}
         </div>
