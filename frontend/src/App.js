@@ -35,6 +35,7 @@ function App() {
   const [error, setError] = useState('');
   const [currentTheme, setCurrentTheme] = useState(themeManager.getCurrentTheme());
   const [showThemeSelector, setShowThemeSelector] = useState(false);
+  const [notification, setNotification] = useState('');
   
   // Form states
   const [newCategoryName, setNewCategoryName] = useState('');
