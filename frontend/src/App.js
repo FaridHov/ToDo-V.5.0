@@ -418,7 +418,7 @@ function App() {
 
         {loading && (
           <div className="glass-window p-6 text-center">
-            <div className="dark-blue-text">⏳ Загрузка данных...</div>
+            <div className="theme-text text-xl">⏳ Загрузка данных...</div>
           </div>
         )}
 
