@@ -533,15 +533,13 @@ function App() {
               placeholder="Название категории"
               className="glass-input md:col-span-2 px-3 py-2 rounded-md focus:outline-none"
             />
-            <select
-              value={newCategoryGroup}
-              onChange={(e) => setNewCategoryGroup(e.target.value)}
-              className="glass-input px-3 py-2 rounded-md focus:outline-none"
-            >
-              <option value="work">Работа</option>
-              <option value="personal">Личная</option>
-              <option value="health">Здоровье</option>
-            </select>
+            <input
+              type="color"
+              value={newCategoryColor}
+              onChange={(e) => setNewCategoryColor(e.target.value)}
+              title="Выберите цвет категории"
+              className="glass-input px-2 py-2 rounded-md focus:outline-none w-full h-10"
+            />
             <button
               type="submit"
               className="px-4 py-2 theme-button focus:outline-none transition-colors"
