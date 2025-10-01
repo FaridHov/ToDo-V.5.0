@@ -360,14 +360,14 @@ function App() {
                 </button>
                 
                 {showThemeSelector && (
-                  <div className="absolute right-0 top-full mt-2 z-50 glass-window p-4 min-w-[300px] max-h-[400px] overflow-y-auto">
+                  <div className="absolute right-0 top-full mt-2 z-50 glass-window p-4 min-w-[350px] max-h-[500px] overflow-y-auto">
                     <h3 className="theme-text text-lg font-semibold mb-3">Выберите тему:</h3>
-                    <div className="theme-selector grid grid-cols-2 gap-2">
+                    <div className="theme-selector grid grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-2">
                       {Object.keys(THEMES).map(themeKey => (
                         <div
                           key={themeKey}
                           onClick={() => handleThemeChange(themeKey)}
-                          className={`theme-option cursor-pointer ${
+                          className={`theme-option cursor-pointer text-center py-3 px-2 ${
                             currentTheme === themeKey ? 'active' : ''
                           }`}
                         >
@@ -377,7 +377,7 @@ function App() {
                     </div>
                     <button
                       onClick={() => setShowThemeSelector(false)}
-                      className="theme-button w-full mt-3 py-2"
+                      className="theme-button w-full mt-4 py-2"
                     >
                       ✖️ Закрыть
                     </button>
