@@ -99,7 +99,115 @@ body {
   animation: shimmer 1.5s infinite;
 }
 
-/* Task priority cascading effects - Dark Blue Theme */
+/* Theme-based styling classes */
+.glass-window {
+  background: var(--theme-window, rgba(30, 30, 30, 0.95));
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid var(--theme-window-border, rgba(255, 255, 255, 0.1));
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glass-window:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.glass-input {
+  background: var(--theme-input, rgba(50, 50, 50, 0.9));
+  border: 2px solid var(--theme-input-border, rgba(255, 255, 255, 0.2));
+  color: var(--theme-input-text, #ffffff);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+  border-color: var(--theme-accent, #00d4ff);
+  box-shadow: 0 0 10px var(--theme-accent, #00d4ff);
+  outline: none;
+}
+
+.glass-input::placeholder {
+  color: var(--theme-text-secondary, #cccccc);
+  opacity: 0.7;
+}
+
+.theme-text {
+  color: var(--theme-text, #ffffff);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+}
+
+.theme-text-secondary {
+  color: var(--theme-text-secondary, #cccccc);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.theme-button {
+  background: var(--theme-accent, #00d4ff);
+  color: var(--theme-text, #ffffff);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.theme-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  filter: brightness(1.1);
+}
+
+.theme-button-success {
+  background: var(--theme-success, #00ff88);
+}
+
+.theme-button-danger {
+  background: var(--theme-danger, #ff4757);
+}
+
+.theme-button-warning {
+  background: var(--theme-warning, #ffa502);
+}
+
+.theme-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.theme-option {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 2px solid var(--theme-window-border, rgba(255, 255, 255, 0.1));
+  background: var(--theme-input, rgba(50, 50, 50, 0.9));
+  color: var(--theme-text, #ffffff);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.theme-option:hover {
+  border-color: var(--theme-accent, #00d4ff);
+  background: var(--theme-accent, #00d4ff);
+  transform: scale(1.05);
+}
+
+.theme-option.active {
+  border-color: var(--theme-accent, #00d4ff);
+  background: var(--theme-accent, #00d4ff);
+  box-shadow: 0 0 15px var(--theme-accent, #00d4ff);
+}
+
+/* Task priority cascading effects - Theme Based */
 .task-high-priority {
   margin-left: 0px;
   border-left: 4px solid #ef4444;
