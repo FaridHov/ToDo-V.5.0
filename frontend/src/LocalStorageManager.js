@@ -15,32 +15,10 @@ class LocalStorageManager {
     const existing = localStorage.getItem(STORAGE_KEY);
     if (!existing) {
       const defaultData = {
-        categories: [
-          {
-            id: uuidv4(),
-            name: 'Работа',
-            group: 'work',
-            order: 0,
-            created_at: new Date().toISOString()
-          },
-          {
-            id: uuidv4(), 
-            name: 'Личные дела',
-            group: 'personal',
-            order: 1,
-            created_at: new Date().toISOString()
-          },
-          {
-            id: uuidv4(),
-            name: 'Здоровье',
-            group: 'health', 
-            order: 2,
-            created_at: new Date().toISOString()
-          }
-        ],
+        categories: [],
         tasks: [],
         settings: {
-          version: '2.0',
+          version: '3.0',
           last_updated: new Date().toISOString()
         }
       };
