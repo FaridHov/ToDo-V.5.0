@@ -542,13 +542,14 @@ function App() {
                     </p>
                   </div>
                   
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex gap-1 opacity-70 hover:opacity-100 transition-opacity">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setEditingCategory(category);
                       }}
-                      className="p-1 text-blue-600 hover:bg-blue-100 rounded"
+                      className="p-2 text-blue-600 hover:bg-blue-100 rounded-md shadow-sm border border-blue-200"
+                      title="Редактировать категорию"
                     >
                       ✏️
                     </button>
@@ -557,7 +558,8 @@ function App() {
                         e.stopPropagation();
                         handleDeleteCategory(category.id);
                       }}
-                      className="p-1 text-red-600 hover:bg-red-100 rounded"
+                      className="p-2 text-red-600 hover:bg-red-100 rounded-md shadow-sm border border-red-200"
+                      title="Удалить категорию"
                     >
                       🗑️
                     </button>
