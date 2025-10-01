@@ -448,7 +448,7 @@ function App() {
                 <div className="space-y-2">
                   {group.categories.map(categoryProgress => (
                     <div key={categoryProgress.category_id} className="space-y-1">
-                      <div className="flex justify-between text-xs dark-blue-text-secondary">
+                      <div className="flex justify-between text-xs theme-text-secondary">
                         <span>{categoryProgress.category_name}</span>
                         <span>
                           {categoryProgress.completed_task_count}/{categoryProgress.task_count} задач
@@ -471,7 +471,7 @@ function App() {
 
         {/* Categories Section */}
         <div className="glass-window p-6">
-          <h2 className="text-2xl font-semibold mb-6 dark-blue-text">📂 Категории</h2>
+          <h2 className="text-2xl font-semibold mb-6 theme-text">📂 Категории</h2>
           
           {/* Create Category Form */}
           <form onSubmit={handleCreateCategory} className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-6">
@@ -517,8 +517,8 @@ function App() {
               >
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h3 className="font-semibold dark-blue-text">{category.name}</h3>
-                    <p className="text-sm dark-blue-text-secondary">
+                    <h3 className="font-semibold theme-text">{category.name}</h3>
+                    <p className="text-sm theme-text-secondary">
                       {category.group === 'work' && '💼 Работа'}
                       {category.group === 'personal' && '🏠 Личная'}
                       {category.group === 'health' && '💪 Здоровье'}
@@ -550,7 +550,7 @@ function App() {
                 {/* Category Progress */}
                 {progress.find(p => p.category_id === category.id) && (
                   <div className="space-y-1">
-                    <div className="flex justify-between text-xs dark-blue-text-secondary">
+                    <div className="flex justify-between text-xs theme-text-secondary">
                       <span>Прогресс</span>
                       <span>
                         {progress.find(p => p.category_id === category.id)?.progress_percentage.toFixed(1)}%
@@ -574,7 +574,7 @@ function App() {
           {editingCategory && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="glass-window p-6 max-w-md w-full mx-4">
-                <h3 className="text-lg font-semibold mb-4 dark-blue-text">✏️ Редактировать категорию</h3>
+                <h3 className="text-lg font-semibold mb-4 theme-text">✏️ Редактировать категорию</h3>
                 <input
                   type="text"
                   defaultValue={editingCategory.name}
@@ -628,7 +628,7 @@ function App() {
         {selectedCategoryId && (
           <div className="glass-window p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold dark-blue-text">📝 Задачи</h2>
+              <h2 className="text-2xl font-semibold theme-text">📝 Задачи</h2>
               <select
                 value={selectedCategoryId}
                 onChange={(e) => setSelectedCategoryId(e.target.value)}
@@ -680,7 +680,7 @@ function App() {
             {/* Tasks List */}
             <div className="space-y-2">
               {filteredTasks.length === 0 ? (
-                <p className="dark-blue-text-secondary text-center py-8">Нет задач в этой категории</p>
+                <p className="theme-text-secondary text-center py-8">Нет задач в этой категории</p>
               ) : (
                 filteredTasks.map((task, index) => (
                   <div 
@@ -750,7 +750,7 @@ function App() {
                     ) : (
                       <>
                         <div className={`flex-1 ${
-                          task.completed ? 'line-through text-gray-400' : 'dark-blue-text'
+                          task.completed ? 'line-through text-gray-400' : 'theme-text'
                         }`}>
                           <div className="flex items-center gap-2">
                             {task.pinned && <span className="text-red-400">📌</span>}
