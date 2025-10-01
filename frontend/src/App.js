@@ -351,7 +351,7 @@ function App() {
               </div>
               
               {/* Theme Selector */}
-              <div className="relative">
+              <div className="relative theme-selector-container">
                 <button
                   onClick={() => setShowThemeSelector(!showThemeSelector)}
                   className="theme-button px-4 py-2 rounded-md"
