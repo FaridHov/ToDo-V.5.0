@@ -49,7 +49,7 @@ class LocalStorageManager {
     const newCategory = {
       id: uuidv4(),
       name: categoryData.name,
-      group: categoryData.group || 'work',
+      color: categoryData.color || '#3B82F6', // Default blue color
       order: Math.max(...data.categories.map(c => c.order), -1) + 1,
       created_at: new Date().toISOString()
     };
