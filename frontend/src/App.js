@@ -432,7 +432,7 @@ function App() {
                 
                 {/* Group Progress Bar */}
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm dark-blue-text-secondary">
+                  <div className="flex justify-between text-sm theme-text-secondary">
                     <span>Общий прогресс группы</span>
                     <span>{group.total_progress.toFixed(1)}%</span>
                   </div>
