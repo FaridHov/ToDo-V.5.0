@@ -39,7 +39,7 @@ function App() {
   
   // Form states
   const [newCategoryName, setNewCategoryName] = useState('');
-  const [newCategoryGroup, setNewCategoryGroup] = useState('work');
+  const [newCategoryColor, setNewCategoryColor] = useState('#3B82F6');
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskWeight, setNewTaskWeight] = useState(1);
