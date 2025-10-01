@@ -565,13 +565,17 @@ function App() {
                 onClick={() => setSelectedCategoryId(category.id)}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="font-semibold theme-text">{category.name}</h3>
-                    <p className="text-sm theme-text-secondary">
-                      {category.group === 'work' && '💼 Работа'}
-                      {category.group === 'personal' && '🏠 Личная'}
-                      {category.group === 'health' && '💪 Здоровье'}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                      style={{ backgroundColor: category.color || '#3B82F6' }}
+                    ></div>
+                    <div>
+                      <h3 className="font-semibold theme-text">{category.name}</h3>
+                      <p className="text-xs theme-text-secondary">
+                        Создана {new Date(category.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
                   
                   <div className="flex gap-1 opacity-70 hover:opacity-100 transition-opacity">
